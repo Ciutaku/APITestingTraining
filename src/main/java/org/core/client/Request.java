@@ -69,7 +69,7 @@ public class Request {
     }
 
     public Request addBearerTokenAuth(String token) {
-        addHeader("Authorisation", "Bearer " + token);
+        addHeader("Authorization", "Bearer " + token);
         return this;
     }
 
