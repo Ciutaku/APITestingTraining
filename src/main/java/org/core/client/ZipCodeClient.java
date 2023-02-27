@@ -6,9 +6,7 @@ import org.core.dto.ResponseEntity;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ZipCodeClient {
 
@@ -35,16 +33,6 @@ public class ZipCodeClient {
 
     public void postZipcodes(String... zipcodes) {
         HttpResponse response = Client.doPost(POST_ZIPCODES_ENDPOINT, Arrays.toString(zipcodes));
-
-    }
-
-    public List<String> getDuplicates(List<String> afterPostZipCodes) {
-        List<String> duplicatesList;
-        duplicatesList = afterPostZipCodes.stream()
-                .filter(e -> Collections.frequency(afterPostZipCodes, e) > 1)
-                .distinct()
-                .collect(Collectors.toList());
-        return duplicatesList;
     }
 
 }

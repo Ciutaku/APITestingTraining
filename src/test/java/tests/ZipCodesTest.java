@@ -5,6 +5,7 @@ import org.core.dto.ResponseEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ZipCodesTest {
@@ -29,9 +30,9 @@ public class ZipCodesTest {
     public void postDuplicateZipCodesInListTest() {
         client.postZipcodes("21345", "21345");
         ResponseEntity<List<String>> response = client.getZipcodes();
-        Assertions.assertNotEquals(201, response.getStatusCode());
-        Assertions.assertTrue(client.getDuplicates(response.getBody().stream().toList()).isEmpty());
-
+        Assertions.assertEquals(201, response.getStatusCode());
+        Assertions.assertTrue(response.getBody().contains("21345"));
+        Assertions.assertEquals(1, Collections.frequency(response.getBody(), "21345"));
     }
 
     @Test
@@ -40,7 +41,8 @@ public class ZipCodesTest {
         String firstZipcode = getResponse.getBody().stream().toList().get(0);
         client.postZipcodes(firstZipcode);
         ResponseEntity<List<String>> response = client.getZipcodes();
-        Assertions.assertNotEquals(201, response.getStatusCode());
-        Assertions.assertTrue(client.getDuplicates(response.getBody().stream().toList()).isEmpty());
+        Assertions.assertEquals(201, response.getStatusCode());
+        Assertions.assertTrue(response.getBody().contains(firstZipcode));
+        Assertions.assertEquals(1, Collections.frequency(response.getBody(), firstZipcode));
     }
 }
