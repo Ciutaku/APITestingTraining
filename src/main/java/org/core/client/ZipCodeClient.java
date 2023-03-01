@@ -1,6 +1,7 @@
 package org.core.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpResponse;
 import org.core.dto.ResponseEntity;
 
@@ -31,8 +32,27 @@ public class ZipCodeClient {
         return zipcodesResponse;
     }
 
-    public void postZipcodes(String... zipcodes) {
+    public ResponseEntity<List<String>> postZipcodes(String... zipcodes) {
+        ResponseEntity<List<String>> responseEntity = new ResponseEntity<>();
         HttpResponse response = Client.doPost(POST_ZIPCODES_ENDPOINT, Arrays.toString(zipcodes));
+        responseEntity.setStatusCode(response.getStatusLine().getStatusCode());
+        try {
+            List<String> zipCodes = Arrays.stream(objectMapper.readValue(response.getEntity().getContent(), String[].class)).toList();
+            responseEntity.setBody(zipCodes);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return responseEntity;
+    }
+
+    public String createAvailableZipcode() {
+        String zipcode = RandomStringUtils.randomNumeric(5);
+        ResponseEntity<List<String>> responseEntity = postZipcodes(zipcode);
+        if (responseEntity.getStatusCode() == 201) {
+            return zipcode;
+        } else {
+            throw new RuntimeException("Failed to create available zipcode.");
+        }
     }
 
 }
