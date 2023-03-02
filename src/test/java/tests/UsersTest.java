@@ -25,17 +25,17 @@ public class UsersTest {
         zipcode = zipCodeClient.createAvailableZipcode();
     }
 
-
     @Test
     public void postUserWithAllFieldsTest() {
-
-        User user = new User();
-        user.setAge(30);
-        user.setName(RandomStringUtils.randomAlphabetic(10));
-        user.setSex(Gender.FEMALE);
-        user.setZipCode(zipcode);
+        User user = User.builder()
+                .age(30)
+                .name(RandomStringUtils.randomAlphabetic(10))
+                .sex(Gender.FEMALE)
+                .zipCode(zipcode)
+                .build();
 
         int statusCode = client.postUsers(user);
+
         ResponseEntity<List<User>> usersResponse = client.getUsers();
         ResponseEntity<List<String>> zipcodes = zipCodeClient.getZipcodes();
         Assertions.assertAll("Asserting all fields test",
@@ -47,9 +47,10 @@ public class UsersTest {
 
     @Test
     public void postUserOnlyWithRequiredFieldsTest() {
-        User user = new User();
-        user.setName(RandomStringUtils.randomAlphabetic(10));
-        user.setSex(Gender.FEMALE);
+        User user = User.builder()
+                .name(RandomStringUtils.randomAlphabetic(10))
+                .sex(Gender.FEMALE)
+                .build();
 
         int statusCode = client.postUsers(user);
 
@@ -62,14 +63,15 @@ public class UsersTest {
 
     @Test
     public void postUserWithUnavailableZipcodeTest() {
-
-        User user = new User();
-        user.setAge(30);
-        user.setName(RandomStringUtils.randomAlphabetic(10));
-        user.setSex(Gender.FEMALE);
-        user.setZipCode("UnavailableZipcode");
+        User user = User.builder()
+                .age(30)
+                .name(RandomStringUtils.randomAlphabetic(10))
+                .sex(Gender.FEMALE)
+                .zipCode("UnavailableZipcode")
+                .build();
 
         int statusCode = client.postUsers(user);
+
         ResponseEntity<List<User>> usersResponse = client.getUsers();
         Assertions.assertAll("Asserting unavailable zipcode test",
                 () -> Assertions.assertEquals(424, statusCode, "Status Code is not 424"),
@@ -81,13 +83,14 @@ public class UsersTest {
     public void postDuplicateUserTest() {
         ResponseEntity<List<User>> usersResponse = client.getUsers();
         User existingUser = usersResponse.getBody().get(0);
-        User user = new User();
-        user.setName(existingUser.getName());
-        user.setSex(existingUser.getSex());
+        User user = User.builder()
+                .name(existingUser.getName())
+                .sex(existingUser.getSex())
+                .build();
 
         int statusCode = client.postUsers(user);
-        ResponseEntity<List<User>> usersAfterPostResponse = client.getUsers();
 
+        ResponseEntity<List<User>> usersAfterPostResponse = client.getUsers();
         Assertions.assertAll("Asserting duplicate user test",
                 () -> Assertions.assertEquals(400, statusCode, "Status Code is not 400"),
                 () -> Assertions.assertEquals(1,
