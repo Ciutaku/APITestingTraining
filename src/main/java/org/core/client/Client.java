@@ -20,4 +20,11 @@ public class Client {
                 .addJsonBody(body)
                 .execute();
     }
+
+    public static HttpResponse doGet(String endpoint, String key, String value) {
+        return Request.get(BASE_URL + endpoint)
+                .addBearerTokenAuth(AuthClient.getToken(AccessType.READ))
+                .addParameter(key, value)
+                .execute();
+    }
 }

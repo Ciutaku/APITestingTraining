@@ -31,6 +31,19 @@ public class UserClient {
         return usersResponse;
     }
 
+    public ResponseEntity<List<User>> getUsers(String key, String value) {
+        ResponseEntity<List<User>> usersResponse = new ResponseEntity<>();
+        HttpResponse response = Client.doGet(POST_USERS_ENDPOINT, key, value);
+        usersResponse.setStatusCode(response.getStatusLine().getStatusCode());
+        try {
+            usersResponse.setBody(Arrays.stream(objectMapper
+                    .readValue(response.getEntity().getContent(), User[].class)).toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return usersResponse;
+    }
+
     public int postUsers(User user) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
