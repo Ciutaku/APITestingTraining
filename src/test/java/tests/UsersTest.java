@@ -28,7 +28,7 @@ public class UsersTest {
     @Test
     public void postUserWithAllFieldsTest() {
         User user = User.builder()
-                .age(30)
+                .age(32)
                 .name(RandomStringUtils.randomAlphabetic(10))
                 .sex(Gender.FEMALE)
                 .zipCode(zipcode)
@@ -94,7 +94,34 @@ public class UsersTest {
         Assertions.assertAll("Asserting duplicate user test",
                 () -> Assertions.assertEquals(400, statusCode, "Status Code is not 400"),
                 () -> Assertions.assertEquals(1,
-                        Collections.frequency(usersAfterPostResponse.getBody(), user), "Response body contains duplicated user")
-        );
+                        Collections.frequency(usersAfterPostResponse.getBody(), user), "Response body contains duplicated user"));
+    }
+
+    @Test
+    public void getUsersTest() {
+        ResponseEntity<List<User>> usersResponse = client.getUsers();
+        Assertions.assertAll("Asserting get Users test",
+                () -> Assertions.assertEquals(200, usersResponse.getStatusCode(), "Status Code is not 200"),
+                () -> Assertions.assertFalse(usersResponse.getBody().isEmpty(), "Response body does not contain user"));
+    }
+
+    @Test
+    public void olderThanParameterTest() {
+        ResponseEntity<List<User>> usersResponse = client.getUsers("olderThan", "29");
+
+        Assertions.assertAll("Asserting get Users with olderThan parameter test",
+                () -> Assertions.assertEquals(200, usersResponse.getStatusCode(), "Status Code is not 200"),
+                () -> Assertions.assertFalse(usersResponse.getBody().isEmpty(), "Response body does not contain user"),
+                () -> Assertions.assertTrue(usersResponse.getBody().stream().allMatch(user -> user.getAge() > 29), "User age is not older than than target age"));
+    }
+
+    @Test
+    public void youngerThanParameterTest() {
+        ResponseEntity<List<User>> usersResponse = client.getUsers("youngerThan", "19");
+
+        Assertions.assertAll("Asserting get Users with youngerThan parameter test",
+                () -> Assertions.assertEquals(200, usersResponse.getStatusCode(), "Status Code is not 200"),
+                () -> Assertions.assertFalse(usersResponse.getBody().isEmpty(), "Response body does not contain user"),
+                () -> Assertions.assertTrue(usersResponse.getBody().stream().allMatch(user -> user.getAge() < 19), "User age is not younger than than target age"));
     }
 }
