@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -104,33 +103,25 @@ public class UsersTest {
         Assertions.assertAll("Asserting get Users test",
                 () -> Assertions.assertEquals(200, usersResponse.getStatusCode(), "Status Code is not 200"),
                 () -> Assertions.assertFalse(usersResponse.getBody().isEmpty(), "Response body does not contain user"));
-
     }
 
     @Test
     public void olderThanParameterTest() {
-        List<Integer> usersAgeList = new ArrayList<>();
         ResponseEntity<List<User>> usersResponse = client.getUsers("olderThan", "29");
-        for (User user : usersResponse.getBody())
-            usersAgeList.add(user.getAge());
 
         Assertions.assertAll("Asserting get Users with olderThan parameter test",
                 () -> Assertions.assertEquals(200, usersResponse.getStatusCode(), "Status Code is not 200"),
                 () -> Assertions.assertFalse(usersResponse.getBody().isEmpty(), "Response body does not contain user"),
-                () -> Assertions.assertTrue(usersAgeList.stream().allMatch(i -> i > 29), "User age is not older than target age"));
+                () -> Assertions.assertTrue(usersResponse.getBody().stream().allMatch(user -> user.getAge() > 29), "User age is not older than than target age"));
     }
 
     @Test
     public void youngerThanParameterTest() {
-        List<Integer> usersAgeList = new ArrayList<>();
         ResponseEntity<List<User>> usersResponse = client.getUsers("youngerThan", "19");
-        for (User user : usersResponse.getBody())
-            usersAgeList.add(user.getAge());
-
 
         Assertions.assertAll("Asserting get Users with youngerThan parameter test",
                 () -> Assertions.assertEquals(200, usersResponse.getStatusCode(), "Status Code is not 200"),
                 () -> Assertions.assertFalse(usersResponse.getBody().isEmpty(), "Response body does not contain user"),
-                () -> Assertions.assertTrue(usersAgeList.stream().allMatch(i -> i < 19), "User age is not younger than than target age"));
+                () -> Assertions.assertTrue(usersResponse.getBody().stream().allMatch(user -> user.getAge() < 19), "User age is not younger than than target age"));
     }
 }
