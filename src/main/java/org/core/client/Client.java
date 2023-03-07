@@ -32,7 +32,7 @@ public class Client {
         return Request.put(BASE_URL + endpoint)
                 .addBearerTokenAuth(AuthClient.getToken(AccessType.WRITE))
                 .addHeader("Content-Type", "application/json")
-                .addJsonBodyPut(body)
+                .addJsonBody(body)
                 .execute();
     }
 }

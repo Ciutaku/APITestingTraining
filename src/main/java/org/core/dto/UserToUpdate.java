@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class UpdateUser {
+public class UserToUpdate {
 
     private User userToChange;
 

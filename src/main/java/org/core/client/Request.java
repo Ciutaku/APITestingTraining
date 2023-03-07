@@ -76,7 +76,7 @@ public class Request {
     public Request addJsonBody(String body) {
         try {
             StringEntity entity = new StringEntity(body);
-            ((HttpPost) request).setEntity(entity);
+            ((HttpEntityEnclosingRequestBase) request).setEntity(entity);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -89,15 +89,5 @@ public class Request {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public Request addJsonBodyPut(String body) {
-        try {
-            StringEntity entity = new StringEntity(body);
-            ((HttpPut) request).setEntity(entity);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        return this;
     }
 }
