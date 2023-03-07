@@ -4,6 +4,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.core.client.UserClient;
 import org.core.client.ZipCodeClient;
 import org.core.dto.ResponseEntity;
+import org.core.dto.UpdateUser;
 import org.core.dto.User;
 import org.core.enums.Gender;
 import org.junit.jupiter.api.Assertions;
@@ -123,5 +124,99 @@ public class UsersTest {
                 () -> Assertions.assertEquals(200, usersResponse.getStatusCode(), "Status Code is not 200"),
                 () -> Assertions.assertFalse(usersResponse.getBody().isEmpty(), "Response body does not contain user"),
                 () -> Assertions.assertTrue(usersResponse.getBody().stream().allMatch(user -> user.getAge() < 19), "User age is not younger than than target age"));
+    }
+
+    @Test
+    public void putUserTest() {
+        ResponseEntity<List<User>> usersResponse = client.getUsers();
+        User existingUser = usersResponse.getBody().get(0);
+        User userToChange = User.builder()
+                .name(existingUser.getName())
+                .sex(existingUser.getSex())
+                .age(existingUser.getAge())
+                .zipCode(existingUser.getZipCode())
+                .build();
+
+        User userUpdateValues = User.builder()
+                .age(30)
+                .name(RandomStringUtils.randomAlphabetic(10))
+                .sex(Gender.FEMALE)
+                .zipCode(zipcode)
+                .build();
+
+        UpdateUser updateUserBody = UpdateUser.builder()
+                .userToChange(userToChange)
+                .userNewValues(userUpdateValues)
+                .build();
+
+        int statusCode = client.putUser(updateUserBody);
+
+        ResponseEntity<List<User>> usersResponseAfterPut = client.getUsers();
+        Assertions.assertAll("Asserting Put User test",
+                () -> Assertions.assertEquals(200, statusCode, "Status Code is not 200"),
+                () -> Assertions.assertTrue(usersResponseAfterPut.getBody().contains(userUpdateValues), "Response body does not contain user"),
+                () -> Assertions.assertFalse(usersResponseAfterPut.getBody().contains(userToChange), "Response body contains old user"));
+    }
+
+    @Test
+    public void putUserWithUnavailableZipcodeTest() {
+        ResponseEntity<List<User>> usersResponse = client.getUsers();
+        User existingUser = usersResponse.getBody().get(0);
+        User userToChange = User.builder()
+                .name(existingUser.getName())
+                .sex(existingUser.getSex())
+                .age(existingUser.getAge())
+                .zipCode(existingUser.getZipCode())
+                .build();
+
+        User userUpdateValues = User.builder()
+                .age(30)
+                .name(RandomStringUtils.randomAlphabetic(10))
+                .sex(Gender.FEMALE)
+                .zipCode("UnavailableZipcode")
+                .build();
+
+        UpdateUser updateUserBody = UpdateUser.builder()
+                .userToChange(userToChange)
+                .userNewValues(userUpdateValues)
+                .build();
+
+        int statusCode = client.putUser(updateUserBody);
+
+        ResponseEntity<List<User>> usersResponseAfterPut = client.getUsers();
+        Assertions.assertAll("Asserting Put User with Unavailable Zipcode test",
+                () -> Assertions.assertEquals(424, statusCode, "Status Code is not 424"),
+                () -> Assertions.assertFalse(usersResponseAfterPut.getBody().contains(userUpdateValues), "Response body contains new user"),
+                () -> Assertions.assertTrue(usersResponseAfterPut.getBody().contains(userToChange), "Response body does not contain old user"));
+    }
+
+    @Test
+    public void putUserWithMissingRequiredFieldsTest() {
+        ResponseEntity<List<User>> usersResponse = client.getUsers();
+        User existingUser = usersResponse.getBody().get(0);
+        User userToChange = User.builder()
+                .name(existingUser.getName())
+                .sex(existingUser.getSex())
+                .age(existingUser.getAge())
+                .zipCode(existingUser.getZipCode())
+                .build();
+
+        User userUpdateValues = User.builder()
+                .age(30)
+                .zipCode(zipcode)
+                .build();
+
+        UpdateUser updateUserBody = UpdateUser.builder()
+                .userToChange(userToChange)
+                .userNewValues(userUpdateValues)
+                .build();
+
+        int statusCode = client.putUser(updateUserBody);
+
+        ResponseEntity<List<User>> usersResponseAfterPut = client.getUsers();
+        Assertions.assertAll("Asserting Put User with missing required fields test",
+                () -> Assertions.assertEquals(409, statusCode, "Status Code is not 409"),
+                () -> Assertions.assertFalse(usersResponseAfterPut.getBody().contains(userUpdateValues), "Response body contains new user"),
+                () -> Assertions.assertTrue(usersResponseAfterPut.getBody().contains(userToChange), "Response body does not contain old user"));
     }
 }

@@ -27,4 +27,12 @@ public class Client {
                 .addParameter(key, value)
                 .execute();
     }
+
+    public static HttpResponse doPut(String endpoint, String body) {
+        return Request.put(BASE_URL + endpoint)
+                .addBearerTokenAuth(AuthClient.getToken(AccessType.WRITE))
+                .addHeader("Content-Type", "application/json")
+                .addJsonBodyPut(body)
+                .execute();
+    }
 }

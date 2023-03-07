@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpResponse;
 import org.core.dto.ResponseEntity;
+import org.core.dto.UpdateUser;
 import org.core.dto.User;
 
 import java.io.IOException;
@@ -48,6 +49,16 @@ public class UserClient {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             HttpResponse response = Client.doPost(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
+            return response.getStatusLine().getStatusCode();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int putUser(UpdateUser user) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            HttpResponse response = Client.doPut(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
             return response.getStatusLine().getStatusCode();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
