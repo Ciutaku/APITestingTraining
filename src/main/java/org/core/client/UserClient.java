@@ -2,10 +2,13 @@ package org.core.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpResponse;
 import org.core.dto.ResponseEntity;
-import org.core.dto.UserToUpdate;
 import org.core.dto.User;
+import org.core.dto.UserToUpdate;
+import org.core.enums.Gender;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -45,7 +48,7 @@ public class UserClient {
         return usersResponse;
     }
 
-    public int postUsers(User user) {
+    public int postUser(User user) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             HttpResponse response = Client.doPost(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
@@ -65,13 +68,16 @@ public class UserClient {
         }
     }
 
-    public User createAvailableUser(User user) {
-        UserClient userClient = new UserClient();
-        ResponseEntity<List<User>> usersResponse = userClient.getUsers();
-        user.setAge(usersResponse.getBody().get(0).getAge());
-        user.setName(usersResponse.getBody().get(0).getName());
-        user.setSex(usersResponse.getBody().get(0).getSex());
-        user.setZipCode(usersResponse.getBody().get(0).getZipCode());
-        return user;
+    public User createAvailableUser(String zipcode) {
+        User user = new User(RandomUtils.nextInt(0, 120),
+                RandomStringUtils.randomAlphabetic(10),
+                Gender.FEMALE, zipcode);
+        int statusCode = postUser(user);
+        if (statusCode == 201) {
+            return user;
+        } else {
+            throw new RuntimeException("Failed to create available user. Check POST /users method.");
+        }
     }
 }
+

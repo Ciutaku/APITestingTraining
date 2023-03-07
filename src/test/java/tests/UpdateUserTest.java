@@ -17,7 +17,6 @@ public class UpdateUserTest {
     private UserClient client;
     private ZipCodeClient zipCodeClient;
     private String zipcode;
-
     private User userToChange;
 
     @BeforeEach
@@ -25,7 +24,7 @@ public class UpdateUserTest {
         client = new UserClient();
         zipCodeClient = new ZipCodeClient();
         zipcode = zipCodeClient.createAvailableZipcode();
-        userToChange = client.createAvailableUser(new User());
+        userToChange = client.createAvailableUser(zipcode);
     }
 
     @Test
