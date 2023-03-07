@@ -34,7 +34,7 @@ public class UsersTest {
                 .zipCode(zipcode)
                 .build();
 
-        int statusCode = client.postUsers(user);
+        int statusCode = client.postUser(user);
 
         ResponseEntity<List<User>> usersResponse = client.getUsers();
         ResponseEntity<List<String>> zipcodes = zipCodeClient.getZipcodes();
@@ -52,7 +52,7 @@ public class UsersTest {
                 .sex(Gender.FEMALE)
                 .build();
 
-        int statusCode = client.postUsers(user);
+        int statusCode = client.postUser(user);
 
         ResponseEntity<List<User>> usersAfterPostResponse = client.getUsers();
         Assertions.assertAll("Asserting required fields test",
@@ -70,7 +70,7 @@ public class UsersTest {
                 .zipCode("UnavailableZipcode")
                 .build();
 
-        int statusCode = client.postUsers(user);
+        int statusCode = client.postUser(user);
 
         ResponseEntity<List<User>> usersResponse = client.getUsers();
         Assertions.assertAll("Asserting unavailable zipcode test",
@@ -88,7 +88,7 @@ public class UsersTest {
                 .sex(existingUser.getSex())
                 .build();
 
-        int statusCode = client.postUsers(user);
+        int statusCode = client.postUser(user);
 
         ResponseEntity<List<User>> usersAfterPostResponse = client.getUsers();
         Assertions.assertAll("Asserting duplicate user test",
