@@ -35,4 +35,12 @@ public class Client {
                 .addJsonBody(body)
                 .execute();
     }
+
+    public static HttpResponse doDelete(String endpoint, String body) {
+        return Request.delete(BASE_URL + endpoint)
+                .addBearerTokenAuth(AuthClient.getToken(AccessType.WRITE))
+                .addHeader("Content-Type", "application/json")
+                .addJsonBody(body)
+                .execute();
+    }
 }
