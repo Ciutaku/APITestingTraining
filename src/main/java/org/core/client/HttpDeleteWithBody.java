@@ -15,5 +15,4 @@ class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
         super();
         setURI(URI.create(uri));
     }
-
 }
