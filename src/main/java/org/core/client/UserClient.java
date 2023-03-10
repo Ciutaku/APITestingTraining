@@ -78,6 +78,17 @@ public class UserClient {
         } else {
             throw new RuntimeException("Failed to create available user. Check POST /users method.");
         }
+
+    }
+
+    public int deleteUser(User user) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            HttpResponse response = Client.doDelete(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
+            return response.getStatusLine().getStatusCode();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

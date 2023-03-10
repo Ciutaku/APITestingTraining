@@ -25,7 +25,7 @@ public class Request {
             case GET -> request = new HttpGet(url);
             case POST -> request = new HttpPost(url);
             case PUT -> request = new HttpPut(url);
-            case DELETE -> request = new HttpDelete(url);
+            case DELETE -> request = new HttpDeleteWithBody(url);
             default -> throw new RuntimeException("Unknown request method");
         }
     }
@@ -74,12 +74,13 @@ public class Request {
     }
 
     public Request addJsonBody(String body) {
+        StringEntity entity = null;
         try {
-            StringEntity entity = new StringEntity(body);
-            ((HttpEntityEnclosingRequestBase) request).setEntity(entity);
+            entity = new StringEntity(body);
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        ((HttpEntityEnclosingRequestBase) request).setEntity(entity);
         return this;
     }
 
