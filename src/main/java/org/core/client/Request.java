@@ -1,14 +1,18 @@
 package org.core.client;
 
 import org.apache.http.HttpRequest;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.core.enums.HttpMethod;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -91,4 +95,13 @@ public class Request {
             throw new RuntimeException(e);
         }
     }
+
+    public Request attachFileToBody(File file, String fileName) {
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        builder.addBinaryBody("file", file, ContentType.DEFAULT_BINARY, fileName);
+        ((HttpEntityEnclosingRequestBase) request).setEntity(builder.build());
+        return this;
+    }
+
 }
