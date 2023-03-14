@@ -3,6 +3,8 @@ package org.core.client;
 import org.apache.http.HttpResponse;
 import org.core.enums.AccessType;
 
+import java.io.File;
+
 public class Client {
 
     public static final String BASE_URL = "http://192.168.0.188:8082";
@@ -41,6 +43,13 @@ public class Client {
                 .addBearerTokenAuth(AuthClient.getToken(AccessType.WRITE))
                 .addHeader("Content-Type", "application/json")
                 .addJsonBody(body)
+                .execute();
+    }
+
+    public static HttpResponse doPost(String endpoint, File file) {
+        return Request.post(BASE_URL + endpoint)
+                .addBearerTokenAuth(AuthClient.getToken(AccessType.WRITE))
+                .attachFileToBody(file)
                 .execute();
     }
 }

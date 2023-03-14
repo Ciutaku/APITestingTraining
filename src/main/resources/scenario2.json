@@ -1,0 +1,20 @@
+[
+  {
+    "name": "scen2oneqgTfpy",
+    "age": 33,
+    "sex": "FEMALE",
+    "zipCode": "44444"
+  },
+  {
+    "name": "scen2twoqgTfpy",
+    "age": 25,
+    "sex": "FEMALE",
+    "zipCode": "55555"
+  },
+  {
+    "name": "scen2threeGqgTfpy",
+    "age": 61,
+    "sex": "FEMALE",
+    "zipCode": "notAvailable"
+  }
+]

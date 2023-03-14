@@ -10,12 +10,14 @@ import org.core.dto.User;
 import org.core.dto.UserToUpdate;
 import org.core.enums.Gender;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class UserClient {
     private static final String POST_USERS_ENDPOINT = "/users";
+    private static final String UPLOAD_USERS_ENDPOINT = "/users/upload";
     private final ObjectMapper objectMapper;
 
     public UserClient() {
@@ -90,5 +92,17 @@ public class UserClient {
             throw new RuntimeException(e);
         }
     }
-}
 
+    public int uploadFile(File file) {
+        return Client.doPost(UPLOAD_USERS_ENDPOINT, file).getStatusLine().getStatusCode();
+    }
+
+    public List<User> getUsersFromFile(File file) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return Arrays.stream(mapper.readValue(file, User[].class)).toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
