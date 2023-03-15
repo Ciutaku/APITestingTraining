@@ -1,10 +1,13 @@
 package tests;
 
+import io.qameta.allure.Issue;
+import io.qameta.allure.Step;
 import org.core.client.ZipCodeClient;
 import org.core.dto.ResponseEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,8 +30,11 @@ public class ZipCodesTest {
     }
 
     @Test
+    @Step("POST Zipcode duplicate in list, Request payload: {payload}")
+    @Issue("PlaceholderBugID")
     public void postDuplicateZipCodesInListTest() {
-        client.postZipcodes("21345", "21345");
+        List<String> payload = Arrays.asList("21345", "21345");
+        client.postZipcodes(String.valueOf(payload));
         ResponseEntity<List<String>> response = client.getZipcodes();
         Assertions.assertEquals(201, response.getStatusCode());
         Assertions.assertTrue(response.getBody().contains("21345"));
@@ -46,3 +52,5 @@ public class ZipCodesTest {
         Assertions.assertEquals(1, Collections.frequency(response.getBody(), firstZipcode));
     }
 }
+
+
