@@ -1,13 +1,11 @@
 package tests;
 
 import io.qameta.allure.Issue;
-import io.qameta.allure.Step;
 import org.core.client.ZipCodeClient;
 import org.core.dto.ResponseEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,6 +13,7 @@ public class ZipCodesTest {
     ZipCodeClient client = new ZipCodeClient();
 
     @Test
+    @Issue("Status code is 201")
     public void getAllZipCodesTest() {
         ResponseEntity<List<String>> zipCodesList = client.getZipcodes();
         Assertions.assertEquals(200, zipCodesList.getStatusCode());
@@ -30,11 +29,9 @@ public class ZipCodesTest {
     }
 
     @Test
-    @Step("POST Zipcode duplicate in list, Request payload: {payload}")
-    @Issue("PlaceholderBugID")
+    @Issue("Duplicated zipcodes from list are added")
     public void postDuplicateZipCodesInListTest() {
-        List<String> payload = Arrays.asList("21345", "21345");
-        client.postZipcodes(String.valueOf(payload));
+        client.postZipcodes("21345", "21345");
         ResponseEntity<List<String>> response = client.getZipcodes();
         Assertions.assertEquals(201, response.getStatusCode());
         Assertions.assertTrue(response.getBody().contains("21345"));
@@ -42,6 +39,7 @@ public class ZipCodesTest {
     }
 
     @Test
+    @Issue("Duplicate zip code is successfully added")
     public void postDuplicateZipCodesInDBTest() {
         ResponseEntity<List<String>> getResponse = client.getZipcodes();
         String firstZipcode = getResponse.getBody().stream().toList().get(0);

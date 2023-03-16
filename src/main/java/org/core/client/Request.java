@@ -1,5 +1,7 @@
 package org.core.client;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.*;
@@ -96,11 +98,14 @@ public class Request {
         }
     }
 
-    public Request attachFileToBody(File file, String fileName) {
-        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        builder.addBinaryBody("file", file, ContentType.DEFAULT_BINARY, fileName);
-        ((HttpEntityEnclosingRequestBase) request).setEntity(builder.build());
+    public Request attachFileToBody(File file) {
+        String fileName = FilenameUtils.getName(file.getName());
+        HttpEntity entity = MultipartEntityBuilder
+                .create()
+                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                .addBinaryBody("file", file, ContentType.DEFAULT_BINARY, fileName)
+                .build();
+        ((HttpEntityEnclosingRequestBase) request).setEntity(entity);
         return this;
     }
 

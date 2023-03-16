@@ -46,10 +46,10 @@ public class Client {
                 .execute();
     }
 
-    public static HttpResponse doPost(String endpoint, File file, String fileName) {
+    public static HttpResponse doPost(String endpoint, File file) {
         return Request.post(BASE_URL + endpoint)
                 .addBearerTokenAuth(AuthClient.getToken(AccessType.WRITE))
-                .attachFileToBody(file, fileName)
+                .attachFileToBody(file)
                 .execute();
     }
 }

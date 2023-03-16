@@ -2,9 +2,11 @@ package org.core.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.core.dto.ResponseEntity;
 import org.core.dto.User;
 import org.core.dto.UserToUpdate;
@@ -25,6 +27,7 @@ public class UserClient {
         objectMapper = new ObjectMapper();
     }
 
+    @Step
     public ResponseEntity<List<User>> getUsers() {
         ResponseEntity<List<User>> usersResponse = new ResponseEntity<>();
         HttpResponse response = Client.doGet(POST_USERS_ENDPOINT);
@@ -38,6 +41,7 @@ public class UserClient {
         return usersResponse;
     }
 
+    @Step
     public ResponseEntity<List<User>> getUsers(String key, String value) {
         ResponseEntity<List<User>> usersResponse = new ResponseEntity<>();
         HttpResponse response = Client.doGet(POST_USERS_ENDPOINT, key, value);
@@ -51,26 +55,31 @@ public class UserClient {
         return usersResponse;
     }
 
+    @Step
     public int postUser(User user) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             HttpResponse response = Client.doPost(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
+            EntityUtils.consumeQuietly(response.getEntity());
             return response.getStatusLine().getStatusCode();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Step
     public int putUser(UserToUpdate user) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             HttpResponse response = Client.doPut(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
+            EntityUtils.consumeQuietly(response.getEntity());
             return response.getStatusLine().getStatusCode();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Step
     public User createAvailableUser(String zipcode) {
         User user = new User(RandomUtils.nextInt(0, 120),
                 RandomStringUtils.randomAlphabetic(10),
@@ -81,23 +90,28 @@ public class UserClient {
         } else {
             throw new RuntimeException("Failed to create available user. Check POST /users method.");
         }
-
     }
 
+    @Step
     public int deleteUser(User user) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             HttpResponse response = Client.doDelete(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
+            EntityUtils.consumeQuietly(response.getEntity());
             return response.getStatusLine().getStatusCode();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public int uploadFile(File file, String fileName) {
-        return Client.doPost(UPLOAD_USERS_ENDPOINT, file, fileName).getStatusLine().getStatusCode();
+    @Step
+    public int uploadFile(File file) {
+        HttpResponse response = Client.doPost(UPLOAD_USERS_ENDPOINT, file);
+        EntityUtils.consumeQuietly(response.getEntity());
+        return response.getStatusLine().getStatusCode();
     }
 
+    @Step
     public List<User> getUsersFromFile(File file) {
         ObjectMapper mapper = new ObjectMapper();
         try {
