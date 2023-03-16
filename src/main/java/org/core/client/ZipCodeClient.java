@@ -1,6 +1,7 @@
 package org.core.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.qameta.allure.Step;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpResponse;
 import org.core.dto.ResponseEntity;
@@ -19,6 +20,7 @@ public class ZipCodeClient {
         objectMapper = new ObjectMapper();
     }
 
+    @Step
     public ResponseEntity<List<String>> getZipcodes() {
         ResponseEntity<List<String>> zipcodesResponse = new ResponseEntity<>();
         HttpResponse response = Client.doGet(GET_ZIPCODES_ENDPOINT);
@@ -32,6 +34,7 @@ public class ZipCodeClient {
         return zipcodesResponse;
     }
 
+    @Step
     public ResponseEntity<List<String>> postZipcodes(String... zipcodes) {
         ResponseEntity<List<String>> responseEntity = new ResponseEntity<>();
         HttpResponse response = Client.doPost(POST_ZIPCODES_ENDPOINT, Arrays.toString(zipcodes));
@@ -45,6 +48,7 @@ public class ZipCodeClient {
         return responseEntity;
     }
 
+    @Step
     public String createAvailableZipcode() {
         String zipcode = RandomStringUtils.randomNumeric(5);
         ResponseEntity<List<String>> responseEntity = postZipcodes(zipcode);
@@ -54,5 +58,4 @@ public class ZipCodeClient {
             throw new RuntimeException("Failed to create available zipcode.");
         }
     }
-
 }

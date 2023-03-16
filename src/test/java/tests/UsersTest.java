@@ -1,5 +1,6 @@
 package tests;
 
+import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.core.client.UserClient;
 import org.core.client.ZipCodeClient;
@@ -80,6 +81,7 @@ public class UsersTest {
     }
 
     @Test
+    @Issue("Status code is incorrect")
     public void postDuplicateUserTest() {
         ResponseEntity<List<User>> usersResponse = client.getUsers();
         User existingUser = usersResponse.getBody().get(0);

@@ -1,5 +1,6 @@
 package tests;
 
+import io.qameta.allure.Issue;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.core.client.UserClient;
 import org.core.client.ZipCodeClient;
@@ -46,6 +47,7 @@ public class UpdateUserTest {
     }
 
     @Test
+    @Issue("User to update is deleted when PUT method body uses unavailable zipcode")
     public void putUserWithUnavailableZipcodeTest() {
         User user = User.builder()
                 .age(30)
@@ -64,6 +66,7 @@ public class UpdateUserTest {
     }
 
     @Test
+    @Issue("User to update is deleted when PUT method body does not use mandatory fields")
     public void putUserWithMissingRequiredFieldsTest() {
         User user = User.builder()
                 .age(30)

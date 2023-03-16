@@ -1,5 +1,6 @@
 package tests;
 
+import io.qameta.allure.Issue;
 import org.core.client.UserClient;
 import org.core.client.ZipCodeClient;
 import org.core.dto.ResponseEntity;
@@ -37,6 +38,7 @@ public class DeleteUserTest {
     }
 
     @Test
+    @Issue("User is not removed when DELETE method body uses only required fields")
     public void deleteUserWithOnlyRequiredFieldsTest() {
         User user = User.builder()
                 .name(availableUser.getName())

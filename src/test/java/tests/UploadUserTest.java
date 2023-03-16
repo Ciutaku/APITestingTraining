@@ -1,5 +1,6 @@
 package tests;
 
+import io.qameta.allure.Issue;
 import org.core.client.UserClient;
 import org.core.dto.User;
 import org.junit.jupiter.api.Assertions;
@@ -25,7 +26,7 @@ public class UploadUserTest {
     public void uploadUsersTest() {
         File file = new File("src/main/resources/" + scenarioOneFile);
         List<User> usersFromFile = client.getUsersFromFile(file);
-        int statusCode = client.uploadFile(file, scenarioOneFile);
+        int statusCode = client.uploadFile(file);
 
         List<User> usersAfterPost = client.getUsers().getBody();
         Assertions.assertAll("Asserting upload Users",
@@ -34,10 +35,11 @@ public class UploadUserTest {
     }
 
     @Test
+    @Issue("Uploading file with a user that has an unavailable zipcode gives incorrect status code and still adds the rest of the valid users")
     public void uploadUsersWithUnavailableZipcodeTest() {
         File file = new File("src/main/resources/" + scenarioTwoFile);
         List<User> usersFromFile = client.getUsersFromFile(file);
-        int statusCode = client.uploadFile(file, scenarioTwoFile);
+        int statusCode = client.uploadFile(file);
 
         List<User> usersAfterPost = client.getUsers().getBody();
         Assertions.assertAll("Asserting upload Users with one unavailable zipcode",
@@ -46,10 +48,11 @@ public class UploadUserTest {
     }
 
     @Test
+    @Issue("Uploading file with a user that has missing required fields gives incorrect status code and deletes the entire user list")
     public void uploadUsersWithMissingRequiredFieldTest() {
         File file = new File("src/main/resources/" + scenarioThreeFile);
         List<User> usersFromFile = client.getUsersFromFile(file);
-        int statusCode = client.uploadFile(file, scenarioThreeFile);
+        int statusCode = client.uploadFile(file);
 
         List<User> usersAfterPost = client.getUsers().getBody();
         Assertions.assertAll("Asserting upload Users with one missing required field",
