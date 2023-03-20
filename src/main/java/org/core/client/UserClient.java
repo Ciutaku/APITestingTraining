@@ -18,8 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class UserClient {
-    private static final String POST_USERS_ENDPOINT = "/users";
-
+    private static final String USERS_ENDPOINT = "/users";
     private static final String UPLOAD_USERS_ENDPOINT = "/users/upload";
     private final ObjectMapper objectMapper;
 
@@ -30,7 +29,7 @@ public class UserClient {
     @Step
     public ResponseEntity<List<User>> getUsers() {
         ResponseEntity<List<User>> usersResponse = new ResponseEntity<>();
-        HttpResponse response = Client.doGet(POST_USERS_ENDPOINT);
+        HttpResponse response = Client.doGet(USERS_ENDPOINT);
         usersResponse.setStatusCode(response.getStatusLine().getStatusCode());
         try {
             usersResponse.setBody(Arrays.stream(objectMapper
@@ -44,7 +43,7 @@ public class UserClient {
     @Step
     public ResponseEntity<List<User>> getUsers(String key, String value) {
         ResponseEntity<List<User>> usersResponse = new ResponseEntity<>();
-        HttpResponse response = Client.doGet(POST_USERS_ENDPOINT, key, value);
+        HttpResponse response = Client.doGet(USERS_ENDPOINT, key, value);
         usersResponse.setStatusCode(response.getStatusLine().getStatusCode());
         try {
             usersResponse.setBody(Arrays.stream(objectMapper
@@ -59,7 +58,7 @@ public class UserClient {
     public int postUser(User user) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            HttpResponse response = Client.doPost(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
+            HttpResponse response = Client.doPost(USERS_ENDPOINT, objectMapper.writeValueAsString(user));
             EntityUtils.consumeQuietly(response.getEntity());
             return response.getStatusLine().getStatusCode();
         } catch (JsonProcessingException e) {
@@ -71,7 +70,7 @@ public class UserClient {
     public int putUser(UserToUpdate user) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            HttpResponse response = Client.doPut(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
+            HttpResponse response = Client.doPut(USERS_ENDPOINT, objectMapper.writeValueAsString(user));
             EntityUtils.consumeQuietly(response.getEntity());
             return response.getStatusLine().getStatusCode();
         } catch (JsonProcessingException e) {
@@ -96,7 +95,7 @@ public class UserClient {
     public int deleteUser(User user) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            HttpResponse response = Client.doDelete(POST_USERS_ENDPOINT, objectMapper.writeValueAsString(user));
+            HttpResponse response = Client.doDelete(USERS_ENDPOINT, objectMapper.writeValueAsString(user));
             EntityUtils.consumeQuietly(response.getEntity());
             return response.getStatusLine().getStatusCode();
         } catch (JsonProcessingException e) {
