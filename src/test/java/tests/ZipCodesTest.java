@@ -22,8 +22,7 @@ public class ZipCodesTest {
 
     @Test
     public void postZipCodesTest() {
-        client.postZipcodes("88888");
-        ResponseEntity<List<String>> response = client.getZipcodes();
+        ResponseEntity<List<String>> response = client.postZipcodes("88888");
         Assertions.assertEquals(201, response.getStatusCode());
         Assertions.assertTrue(response.getBody().contains("88888"));
     }
@@ -31,8 +30,7 @@ public class ZipCodesTest {
     @Test
     @Issue("Duplicated zipcodes from list are added")
     public void postDuplicateZipCodesInListTest() {
-        client.postZipcodes("21345", "21345");
-        ResponseEntity<List<String>> response = client.getZipcodes();
+        ResponseEntity<List<String>> response = client.postZipcodes("21345", "21345");
         Assertions.assertEquals(201, response.getStatusCode());
         Assertions.assertTrue(response.getBody().contains("21345"));
         Assertions.assertEquals(1, Collections.frequency(response.getBody(), "21345"));
@@ -43,8 +41,7 @@ public class ZipCodesTest {
     public void postDuplicateZipCodesInDBTest() {
         ResponseEntity<List<String>> getResponse = client.getZipcodes();
         String firstZipcode = getResponse.getBody().stream().toList().get(0);
-        client.postZipcodes(firstZipcode);
-        ResponseEntity<List<String>> response = client.getZipcodes();
+        ResponseEntity<List<String>> response = client.postZipcodes(firstZipcode);
         Assertions.assertEquals(201, response.getStatusCode());
         Assertions.assertTrue(response.getBody().contains(firstZipcode));
         Assertions.assertEquals(1, Collections.frequency(response.getBody(), firstZipcode));
