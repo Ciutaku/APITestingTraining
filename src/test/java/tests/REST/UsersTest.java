@@ -113,14 +113,10 @@ public class UsersTest {
     public void postDuplicateUserTest() {
         ResponseEntity<List<User>> usersResponse = client.getUsers();
         User existingUser = usersResponse.getBody().get(0);
-        User user = User.builder()
-                .name(existingUser.getName())
-                .sex(existingUser.getSex())
-                .build();
 
         given().header("Authorization", "Bearer " + AuthClient.getToken(AccessType.WRITE))
                 .contentType("application/json")
-                .body(user)
+                .body(existingUser)
                 .post(BASE_URL + "/users")
                 .then().statusCode(400);
 
@@ -130,7 +126,6 @@ public class UsersTest {
                 .extract()
                 .as(User[].class);
 
-        assertFalse(Arrays.stream(users).toList().contains(user));
         assertEquals(1, Collections.frequency(List.of(users), existingUser));
     }
 

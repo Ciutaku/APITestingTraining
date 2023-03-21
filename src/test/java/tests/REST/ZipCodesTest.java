@@ -51,12 +51,9 @@ public class ZipCodesTest {
                 .post(BASE_URL + "/zip-codes/expand")
                 .then()
                 .statusCode(201)
-                .assertThat()
-                .body(containsString("21345"))
-                .extract().asString());
+                .extract().as(String[].class));
 
-        //can't get the assert to verify inside the list
-        assertEquals(1, Collections.frequency(List.of(zipCodesList), "21345"));
+        assertEquals(1, Collections.frequency(zipCodesList, "21345"));
     }
 
     @Test
@@ -69,12 +66,9 @@ public class ZipCodesTest {
                 .body(List.of(firstZipcode))
                 .post(BASE_URL + "/zip-codes/expand")
                 .then()
-                .statusCode(201)
-                .assertThat()
-                .body(Matchers.containsString(firstZipcode));
+                .statusCode(201);
 
-        //can't get the assert to verify inside the list
-        assertEquals(1, Collections.frequency(List.of(getResponse.getBody()), firstZipcode));
+        assertEquals(1, Collections.frequency(getResponse.getBody(), firstZipcode));
     }
 }
 

@@ -85,18 +85,14 @@ public class UsersTest {
     public void postDuplicateUserTest() {
         ResponseEntity<List<User>> usersResponse = client.getUsers();
         User existingUser = usersResponse.getBody().get(0);
-        User user = User.builder()
-                .name(existingUser.getName())
-                .sex(existingUser.getSex())
-                .build();
 
-        int statusCode = client.postUser(user);
+        int statusCode = client.postUser(existingUser);
 
         ResponseEntity<List<User>> usersAfterPostResponse = client.getUsers();
         Assertions.assertAll("Asserting duplicate user test",
                 () -> Assertions.assertEquals(400, statusCode, "Status Code is not 400"),
                 () -> Assertions.assertEquals(1,
-                        Collections.frequency(usersAfterPostResponse.getBody(), user), "Response body contains duplicated user"));
+                        Collections.frequency(usersAfterPostResponse.getBody(), existingUser), "Response body contains duplicated user"));
     }
 
     @Test
